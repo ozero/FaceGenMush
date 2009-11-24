@@ -6,7 +6,7 @@ package org.example.facegenmush;
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  *
- *     http://www.apache.org/licenses/LICENSE-2.0 
+ *	 http://www.apache.org/licenses/LICENSE-2.0 
  *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the License is distributed on an "AS IS" BASIS, 
@@ -112,14 +112,14 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		Log.d(TAG, "randSelect:[" + idx + "/" + length + "]");
 		String[] retval = data[idx];
 		return retval;
-    }
+	}
 
 	//候補定義及び組み立て
 	private String[] generate(){
-	    
+		
 		//候補
-    	String fdcolor[][] = {{"pink"},{"gray"},{"#8888ff"}};
-    	String fdrinkaku[][] = {{"(", ")"}, {"(", ")"}, {"|", "|"}, {"[", "]"}};
+		String fdcolor[][] = {{"pink"},{"gray"},{"#8888ff"}};
+		String fdrinkaku[][] = {{"(", ")"}, {"(", ")"}, {"|", "|"}, {"[", "]"}};
 		String fdotete[][] = {
 			{"", "", "", "", ""}, {"", "", "m", "", ""}, {"", "", "ლ", "", ""},
 			{"ლ", "", "", "ლ", ""}, {"", "｢", "", "", "｢"}, {"", " つ", "", "", "つ"}, 
@@ -167,7 +167,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		String retval[] ={ielm, color[0]}; 
 		Log.d(TAG, "generate: ["+ retval[0] + " / " + retval[1] + "]");
 		
-	    return retval;
+		return retval;
 	}
 
 	// from : http://amachang.sakura.ne.jp/misc/aamaker/
