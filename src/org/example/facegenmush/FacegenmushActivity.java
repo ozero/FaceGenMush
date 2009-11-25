@@ -80,7 +80,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			mRegreetBtn.setOnClickListener(this);
 			//mod
 			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
-			mFacecharTV.setText(gen[0] + " < Hello, This is a mashroom app.");
+			mFacecharTV.setText(gen[0] + " < Hello, This is a mushroom app.");
 			Log.d(TAG, "init:dialog-norm:done");
 		}
 	}
@@ -108,7 +108,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		} else if (v == mRegreetBtn) {
 			Log.d(TAG, "click:regenerate");
 			gen = generate();
-			mFacecharTV.setText(gen[0] + " < Hello, This is a mashroom app.");
+			mFacecharTV.setText(gen[0] + " < Hello, This is a mushroom app.");
 			mFacecharTV.setTextColor(Color.rgb(
 					Integer.parseInt(gen[1]),
 					Integer.parseInt(gen[2]),
@@ -145,25 +145,31 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		String fdcolor[][] = {{"255","192","203"},{"128","128","128"},{"136","136","255"}};
 		String fdrinkaku[][] = {{"(", ")"}, {"(", ")"}, {"|", "|"}, {"[", "]"}};
 		String fdotete[][] = {
-			{"", "", "", "", ""}, {"", "", "m", "", ""}, {"", "", "ლ", "", ""},
-			{"ლ", "", "", "ლ", ""}, {"", "｢", "", "", "｢"}, {"", " つ", "", "", "つ"}, 
+			{"", "", "", "", ""}, {"", "", "m", "", ""}, 
+			{"", "", "ლ", "", ""}, {"ლ", "", "", "ლ", ""},
+			{"", "｢", "", "", "｢"}, {"", " つ", "", "", "つ"}, 
 			{"", " ", "", "", "o彡ﾟ"}, {"", "n", "", "", "η"}, {"", "∩", "", "∩", ""},
 			{"∩", "", "", "", "∩"}, {"ヽ", "", "", "", "ノ"}, {"┐", "", "", "", "┌"},
-			{"╮", "", "", "", "╭"}, {"<", "", "", "", "/"}, {"╰", "", "", " ", ""},
+			{"╮", "", "", "", "╭"}, {"<", "", "", "", "/"}, 
+			{"╰", "", "", " ", ""},
 			{"o", "", "", "", "o"}, {"o", "", "", "", "ツ"}, {"", "", "", "", "ﾉｼ"}
 		};
 		String fdomeme[][] = {
-			{"╹", "╹"}, {"＞", "＜"}, {"＾", "＾"}, {"・", "・"}, {"´・", "・`"},
-			{"`・", "・´"}, {"´", "`"}, {"≧", "≦"}, {"ﾟ", "ﾟ"}, {"\"", "\""}, {"･ิ", "･ิ"},
-			{"❛", "❛"}, {"⊙", "⊙"}, {"￣", "￣"}, {"◕ˇ", "ˇ◕"}
+			{"╹", "╹"}, 
+			{"＞", "＜"}, {"＾", "＾"}, {"・", "・"}, {"´・", "・`"},
+			{"`・", "・´"}, {"´", "`"}, {"≧", "≦"}, {"ﾟ", "ﾟ"}, {"\"", "\""},
+			{"･ิ", "･ิ"},	{"❛", "❛"},
+			{"⊙", "⊙"}, {"￣", "￣"}, 
+			{"◕ˇ", "ˇ◕"}
 		};
 		String fdokuti[][] = {
 			{"ω"},{"∀"},{"▽"},{"△"},{"Д"},{"◡"},{"A"},{"□"},{"～"},
 			{"ー"},{"ェ"},{"ρ"},{"o"},{"O"},{"○"}
 		};
 		String fdhoppe[][] = {
-			{"", ""}, {"*", ""}, {"", "*"}, {"", "#"}, {"#", ""}, {"✿", ""},
-			{"", "✿"}, {"", "；"}, {"；", ""}, {"｡", "｡"}, {"｡", ""}, {"", "｡"},
+			{"", ""}, {"*", ""}, {"", "*"}, {"", "#"}, {"#", ""}, 
+			{"✿", ""}, {"", "✿"}, 
+			{"", "；"}, {"；", ""}, {"｡", "｡"}, {"｡", ""}, {"", "｡"},
 			{"▰", "▰"}, {"", "▰"}, {"▰", ""}
 		};
 		
