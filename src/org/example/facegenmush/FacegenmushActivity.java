@@ -146,7 +146,8 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		String fdrinkaku[][] = {{"(", ")"}, {"(", ")"}, {"|", "|"}, {"[", "]"}};
 		String fdotete[][] = {
 			{"", "", "", "", ""}, {"", "", "m", "", ""}, 
-			{"", "", "ლ", "", ""}, {"ლ", "", "", "ლ", ""},
+			{"", "", "ლ", "", ""}, //ng 'GEORGIAN LETTER LAS' (U+10DA)
+			{"ლ", "", "", "ლ", ""}, //ng
 			{"", "｢", "", "", "｢"}, {"", " つ", "", "", "つ"}, 
 			{"", " ", "", "", "o彡ﾟ"}, {"", "n", "", "", "η"}, {"", "∩", "", "∩", ""},
 			{"∩", "", "", "", "∩"}, {"ヽ", "", "", "", "ノ"}, {"┐", "", "", "", "┌"},
@@ -155,29 +156,37 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			{"o", "", "", "", "o"}, {"o", "", "", "", "ツ"}, {"", "", "", "", "ﾉｼ"}
 		};
 		String fdomeme[][] = {
-			{"╹", "╹"}, 
+			{"╹", "╹"}, //ng Unicode Character 'BOX DRAWINGS HEAVY UP' (U+2579)
 			{"＞", "＜"}, {"＾", "＾"}, {"・", "・"}, {"´・", "・`"},
 			{"`・", "・´"}, {"´", "`"}, {"≧", "≦"}, {"ﾟ", "ﾟ"}, {"\"", "\""},
-			{"･ิ", "･ิ"},	{"❛", "❛"},
-			{"⊙", "⊙"}, {"￣", "￣"}, 
-			{"◕ˇ", "ˇ◕"}
+			{"･ิ", "･ิ"},	//like "･"
+			{"❛", "❛"},//ng
+			{"⊙", "⊙"}, 
+			{"￣", "￣"}, //U+FFE3 (FULLWIDTH MACRON)
+			{"◕ˇ", "ˇ◕"} //&#9685;
 		};
 		String fdokuti[][] = {
-			{"ω"},{"∀"},{"▽"},{"△"},{"Д"},{"◡"},{"A"},{"□"},{"～"},
-			{"ー"},{"ェ"},{"ρ"},{"o"},{"O"},{"○"}
+			{"ω"},{"∀"},{"▽"},{"△"},{"Д"},
+			{"◡"},{"A"},{"□"},{"～"},{"ー"},
+			{"ェ"},{"ρ"},{"o"},{"O"},{"○"}
 		};
 		String fdhoppe[][] = {
 			{"", ""}, {"*", ""}, {"", "*"}, {"", "#"}, {"#", ""}, 
 			{"✿", ""}, {"", "✿"}, 
 			{"", "；"}, {"；", ""}, {"｡", "｡"}, {"｡", ""}, {"", "｡"},
-			{"▰", "▰"}, {"", "▰"}, {"▰", ""}
+			{"▰", "▰"}, //ng
+			{"", "▰"}, //ng
+			{"▰", ""}//ng
 		};
 		
 		//ランダム選択
+		Log.d(TAG, "fcolor:");
 		String[] color = randSelect(fdcolor); 
+		Log.d(TAG, "frin/ote/ome:");
 		String[] rinkaku = randSelect(fdrinkaku); 
 		String[] otete = randSelect(fdotete); 
 		String[] omeme = randSelect(fdomeme); 
+		Log.d(TAG, "foku/hop:");
 		String[] okuti = randSelect(fdokuti); 
 		String[] hoppe = randSelect(fdhoppe); 
 		
