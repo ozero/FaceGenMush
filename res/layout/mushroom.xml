@@ -11,7 +11,7 @@
 
 	<TextView
 	  android:id="@+id/facechar_tv"
-    android:textSize = "30dp"
+    android:textSize = "40dp"
     android:includeFontPadding = "true"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
@@ -19,33 +19,41 @@
     android:gravity="center|center_horizontal"
 		/>
 
-	<LinearLayout 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		
-		<Button
-		  android:id="@+id/regenerate_btn"
-		  android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/regenerate" />
+  <LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    
+    <Button
+      android:id="@+id/regenerate_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="@string/regenerate" />
 
-		<Button
-		  android:id="@+id/replace_btn"
-		  android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:textStyle = "bold"
-			android:text="@string/replace" />
+      
+  </LinearLayout>
 
-		<Button
-		  android:id="@+id/cancel_btn"
-		  android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/cancel" />
-			
-	</LinearLayout>
+  <LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    
+
+    <Button
+      android:id="@+id/replace_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textStyle = "bold"
+      android:text="@string/replace" />
+
+    <Button
+      android:id="@+id/cancel_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="@string/cancel" />
+      
+  </LinearLayout>
 
 
 </LinearLayout>
