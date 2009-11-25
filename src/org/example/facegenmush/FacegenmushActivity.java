@@ -32,6 +32,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 	private static final String REPLACE_KEY = "replace_key";
 	private String mReplaceString;
 	private Button mRegenerateBtn;
+	private Button mRegreetBtn;
 	private Button mReplaceBtn;
 	private Button mCancelBtn;
 	private TextView mFacecharTV;
@@ -75,8 +76,8 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			//Construct View
 			setContentView(R.layout.main);
 			//bind
-			mRegenerateBtn = (Button) findViewById(R.id.regenerate_btn);
-			mRegenerateBtn.setOnClickListener(this);
+			mRegreetBtn = (Button) findViewById(R.id.regreet_btn);
+			mRegreetBtn.setOnClickListener(this);
 			//mod
 			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
 			mFacecharTV.setText(gen[0] + " < Hello, This is a mashroom app.");
@@ -96,6 +97,15 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			result = mReplaceString;
 			replace(result);
 		} else if (v == mRegenerateBtn) {
+			Log.d(TAG, "click:regenerate");
+			gen = generate();
+			mFacecharTV.setText(gen[0]);
+			mFacecharTV.setTextColor(Color.rgb(
+					Integer.parseInt(gen[1]),
+					Integer.parseInt(gen[2]),
+					Integer.parseInt(gen[3])
+				)); 
+		} else if (v == mRegreetBtn) {
 			Log.d(TAG, "click:regenerate");
 			gen = generate();
 			mFacecharTV.setText(gen[0] + " < Hello, This is a mashroom app.");
