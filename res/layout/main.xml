@@ -17,16 +17,38 @@
  */
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
+	android:orientation="vertical" 
+	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-    android:textColor="#f0f0f0"
-    android:background="#666666"
+  android:textColor="#666666"
+  android:background="#f0f0f0"
 	>
 	<TextView
-    android:id="@+id/hello_tv"
+    android:id="@+id/facechar_tv"
 	  android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-    android:textSize = "30dp"
+    android:padding="6dp"
     android:includeFontPadding = "true"
+    android:textSize = "36dp"
+    android:gravity="center"
     />
+  <Button
+    android:id="@+id/regenerate_btn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/regenerate"
+    android:layout_gravity="center_horizontal"
+     />
+  <TextView
+    android:id="@+id/facechar_tv"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_marginTop="8dp"
+    android:autoLink="web"
+    android:textColor="#333333"
+    android:textSize = "10dp"
+    android:text="[ cloned from : http://bit.ly/1YKyIG @amachang ]"
+    />
+
 </LinearLayout>

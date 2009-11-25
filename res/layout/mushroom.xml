@@ -2,8 +2,8 @@
 
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:textColor="#f0f0f0"
-  android:background="#666666"
+  android:textColor="#666666"
+  android:background="#f0f0f0"
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"

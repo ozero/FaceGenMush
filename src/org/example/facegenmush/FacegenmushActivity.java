@@ -18,6 +18,7 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,7 +34,6 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 	private Button mRegenerateBtn;
 	private Button mReplaceBtn;
 	private Button mCancelBtn;
-	private TextView mHelloTV;
 	private TextView mFacecharTV;
 	private Random random = new Random();
 	private String gen[] = null;
@@ -51,7 +51,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		if (action != null && ACTION_INTERCEPT.equals(action)) {
 			/* Simejiから呼出された時 */
 			mReplaceString = it.getStringExtra(REPLACE_KEY);// 置換元の文字を取得
-			//init layout
+			//Construct View
 			setContentView(R.layout.mushroom);
 			//bind
 			mRegenerateBtn = (Button) findViewById(R.id.regenerate_btn);
@@ -63,15 +63,23 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			//mod
 			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
 			mFacecharTV.setText((String) gen[0]); 
+			mFacecharTV.setTextColor(Color.rgb(
+					Integer.parseInt(gen[1]),
+					Integer.parseInt(gen[2]),
+					Integer.parseInt(gen[3])
+				)); 
 			
 			Log.d(TAG, "init:dialog-mush:done");
 		} else {
 			// Simeji以外から呼出された時
-			//init layout
+			//Construct View
 			setContentView(R.layout.main);
+			//bind
+			mRegenerateBtn = (Button) findViewById(R.id.regenerate_btn);
+			mRegenerateBtn.setOnClickListener(this);
 			//mod
-			mHelloTV = (TextView) findViewById(R.id.hello_tv);
-			mHelloTV.setText(gen[0] + " < Hello, This is a mashroom app.");
+			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
+			mFacecharTV.setText(gen[0] + " < Hello, This is a mashroom app.");
 			Log.d(TAG, "init:dialog-norm:done");
 		}
 	}
@@ -81,7 +89,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		String result = null;
 		if (v == mReplaceBtn) {
 			Log.d(TAG, "click:usethis");
-			result = gen[0] + " < " + mReplaceString;
+			result = gen[0] + " " + mReplaceString;
 			replace(result);
 		} else if (v == mCancelBtn) {
 			Log.d(TAG, "click:cancel");
@@ -90,7 +98,12 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		} else if (v == mRegenerateBtn) {
 			Log.d(TAG, "click:regenerate");
 			gen = generate();
-			mFacecharTV.setText((String) gen[0]); 
+			mFacecharTV.setText(gen[0] + " < Hello, This is a mashroom app.");
+			mFacecharTV.setTextColor(Color.rgb(
+					Integer.parseInt(gen[1]),
+					Integer.parseInt(gen[2]),
+					Integer.parseInt(gen[3])
+				)); 
 		}
 	}
 	
@@ -118,7 +131,8 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 	private String[] generate(){
 		
 		//候補
-		String fdcolor[][] = {{"pink"},{"gray"},{"#8888ff"}};
+		//{"pink"},{"gray"},{"#8888ff"}
+		String fdcolor[][] = {{"255","192","203"},{"128","128","128"},{"136","136","255"}};
 		String fdrinkaku[][] = {{"(", ")"}, {"(", ")"}, {"|", "|"}, {"[", "]"}};
 		String fdotete[][] = {
 			{"", "", "", "", ""}, {"", "", "m", "", ""}, {"", "", "ლ", "", ""},
@@ -139,7 +153,8 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		};
 		String fdhoppe[][] = {
 			{"", ""}, {"*", ""}, {"", "*"}, {"", "#"}, {"#", ""}, {"✿", ""},
-			{"", "✿"}, {"", "；"}, {"；", ""}, {"｡", "｡"}, {"｡", ""}, {"", "｡"}
+			{"", "✿"}, {"", "；"}, {"；", ""}, {"｡", "｡"}, {"｡", ""}, {"", "｡"},
+			{"▰", "▰"}, {"", "▰"}, {"▰", ""}
 		};
 		
 		//ランダム選択
@@ -164,8 +179,9 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			//+ " http://bit.ly/1YKyIG"
 		;
 		
-		String retval[] ={ielm, color[0]}; 
-		Log.d(TAG, "generate: ["+ retval[0] + " / " + retval[1] + "]");
+		String retval[] ={ielm, color[0], color[1], color[2]}; 
+		Log.d(TAG, "generate: ["+ retval[0] + " / " 
+				+ retval[1] + retval[2] + retval[3] + "]");
 		
 		return retval;
 	}
