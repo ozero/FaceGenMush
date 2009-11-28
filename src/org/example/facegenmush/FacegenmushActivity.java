@@ -159,11 +159,11 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			{"╹", "╹"}, //ng Unicode Character 'BOX DRAWINGS HEAVY UP' (U+2579)
 			{"＞", "＜"}, {"＾", "＾"}, {"・", "・"}, {"´・", "・`"},
 			{"`・", "・´"}, {"´", "`"}, {"≧", "≦"}, {"ﾟ", "ﾟ"}, {"\"", "\""},
-			{"･ิ", "･ิ"},	//like "･"
-			{"❛", "❛"},//ng
+			{"･ิ", "･ิ"},	//ng(thai) HALFWIDTH KATAKANA MIDDLE DOT + THAI CHARACTER SARA I
+			{"❛", "❛"},//ng dingbat: HEAVY SINGLE TURNED COMMA QUOTATION MARK ORNAMENT
 			{"⊙", "⊙"}, 
-			{"￣", "￣"}, //U+FFE3 (FULLWIDTH MACRON)
-			{"◕ˇ", "ˇ◕"} //&#9685;
+			{"￣", "￣"}, //ng Halfwidth and Fullwidth Forms: FULLWIDTH MACRON
+			{"◕ˇ", "ˇ◕"} //ng Geometric Shapes: 'CIRCLE WITH ALL BUT UPPER LEFT QUADRANT BLACK'
 		};
 		String fdokuti[][] = {
 			{"ω"},{"∀"},{"▽"},{"△"},{"Д"},
@@ -174,7 +174,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			{"", ""}, {"*", ""}, {"", "*"}, {"", "#"}, {"#", ""}, 
 			{"✿", ""}, {"", "✿"}, 
 			{"", "；"}, {"；", ""}, {"｡", "｡"}, {"｡", ""}, {"", "｡"},
-			{"▰", "▰"}, //ng
+			{"▰", "▰"}, //ng Geometric Shapes: BLACK PARALLELOGRAM
 			{"", "▰"}, //ng
 			{"▰", ""}//ng
 		};
