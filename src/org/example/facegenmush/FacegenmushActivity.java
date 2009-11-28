@@ -210,7 +210,8 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		
 		return retval;
 	}
-
+	
+	//
 	// from : http://amachang.sakura.ne.jp/misc/aamaker/
 	// 生来の助平者につき(´人`)狼藉御免 RT @amachang ヽ|＞ェ＜；|ノ ソースコードを見るなんてエッチ過ぎです！
 	
