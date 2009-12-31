@@ -15,39 +15,57 @@ package org.example.facegenmush;
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
+import java.util.ArrayList;
 import java.util.Random;
 
-import android.app.Activity;
+
+import android.app.AlertDialog;
+import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.util.Log;
 
-public class FacegenmushActivity extends Activity implements OnClickListener {
+import org.example.facegenmush.generateModel;
+
+
+public class FacegenmushActivity extends ListActivity implements OnClickListener {
 	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
 	private static final String REPLACE_KEY = "replace_key";
 	private String mReplaceString;
 	private Button mRegenerateBtn;
 	private Button mRegreetBtn;
 	private Button mReplaceBtn;
+	private Button mUsagehistoryBtn;
 	private Button mCancelBtn;
 	private TextView mFacecharTV;
 	private Random random = new Random();
 	private String gen[] = null;
 	private String TAG = "FaceGenMush";
+	private generateModel genDbHelper = new generateModel(this);
+	private usageModel usageDbHelper = new usageModel(this);
 
 	// http://www.adamrocker.com/blog/mushroom-collaborates-with-simeji/
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		//init
 		super.onCreate(savedInstanceState);
 		Intent it = getIntent();
 		String action = it.getAction();
-		gen = generate();
+		genDbHelper.open();
+		usageDbHelper.open();
+		gen = generate();//生成
+		
+		//
 		if (action != null && ACTION_INTERCEPT.equals(action)) {
 			/* Simejiから呼出された時 */
 			mReplaceString = it.getStringExtra(REPLACE_KEY);// 置換元の文字を取得
@@ -60,11 +78,15 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			mReplaceBtn.setOnClickListener(this);
 			mCancelBtn = (Button) findViewById(R.id.cancel_btn);
 			mCancelBtn.setOnClickListener(this);
+			mUsagehistoryBtn = (Button) findViewById(R.id.usagehistory_btn);
+			mUsagehistoryBtn.setOnClickListener(this);
 			// mod
 			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
 			mFacecharTV.setText((String) gen[0]);
 			mFacecharTV.setTextColor(Color.rgb(Integer.parseInt(gen[1]),
 					Integer.parseInt(gen[2]), Integer.parseInt(gen[3])));
+			// ヒストリを表示
+			dispGenHistory();
 
 			Log.d(TAG, "init:dialog-mush:done");
 		} else {
@@ -77,6 +99,8 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			// mod
 			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
 			mFacecharTV.setText(gen[0] + " < Hello, This is a mushroom app.");
+			// ヒストリを表示
+			dispGenHistory();
 			Log.d(TAG, "init:dialog-norm:done");
 		}
 	}
@@ -94,19 +118,42 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 			replace(result);
 		} else if (v == mRegenerateBtn) {
 			Log.d(TAG, "click:regenerate");
-			gen = generate();
+			gen = generate();//生成
 			mFacecharTV.setText(gen[0]);
 			mFacecharTV.setTextColor(Color.rgb(Integer.parseInt(gen[1]),
 					Integer.parseInt(gen[2]), Integer.parseInt(gen[3])));
+			// ヒストリを再表示
+			dispGenHistory();
 		} else if (v == mRegreetBtn) {
 			Log.d(TAG, "click:regenerate");
-			gen = generate();
+			gen = generate();//生成
 			mFacecharTV.setText(gen[0] + " < Hello, This is a mushroom app.");
 			mFacecharTV.setTextColor(Color.rgb(Integer.parseInt(gen[1]),
 					Integer.parseInt(gen[2]), Integer.parseInt(gen[3])));
+			// ヒストリを再表示
+			dispGenHistory();
+		} else if (v == mUsagehistoryBtn) {
+			Log.d(TAG, "click:usagehistory");
+			dispUsageHistory();
 		}
 	}
 
+	
+	//リストアイテムがクリックされた際の処理
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		Log.d(TAG, "onListItemClick():" + id);
+		super.onListItemClick(l, v, position, id);
+		Cursor c = genDbHelper.fetchItem(id);
+		String face = c.getString(c.getColumnIndexOrThrow(generateModel.KEY_FACE));
+		String result = face + " " + mReplaceString;
+		replace(result);
+		
+		return;
+	}
+
+	
+	
 	// ////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -119,6 +166,10 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		Intent data = new Intent();
 		data.putExtra(REPLACE_KEY, result);
 		setResult(RESULT_OK, data);
+		
+		//使用履歴に記録する
+		usageDbHelper.createItem(result);
+		
 		finish();
 	}
 
@@ -126,7 +177,7 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 	private String[] randSelect(String[][] data) {
 		int length = data.length;
 		int idx = random.nextInt(length);
-		Log.d(TAG, "randSelect:[" + idx + "/" + length + "]");
+		//Log.d(TAG, "randSelect:[" + idx + "/" + length + "]");
 		String[] retval = data[idx];
 		return retval;
 	}
@@ -137,13 +188,13 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		faceparts parts = new faceparts(0);
 
 		// ランダム選択
-		Log.d(TAG, "fcolor:");
+		//Log.d(TAG, "fcolor:");
 		String[] color = randSelect(parts.fdcolor);
-		Log.d(TAG, "frin/ote/ome:");
+		//Log.d(TAG, "frin/ote/ome:");
 		String[] rinkaku = randSelect(parts.fdrinkaku);
 		String[] otete = randSelect(parts.fdotete);
 		String[] omeme = randSelect(parts.fdomeme);
-		Log.d(TAG, "foku/hop:");
+		//Log.d(TAG, "foku/hop:");
 		String[] okuti = randSelect(parts.fdokuti);
 		String[] hoppe = randSelect(parts.fdhoppe);
 
@@ -161,17 +212,83 @@ public class FacegenmushActivity extends Activity implements OnClickListener {
 		Log.d(TAG, "generate: [" + retval[0] + " / " + retval[1] + retval[2]
 				+ retval[3] + "]");
 		
-		//TODO: ヒストリに記録
+		//生成履歴に記録
+		genDbHelper.createItem(ielm);
 		
-		//TODO: ヒストリを再表示
-
 		return retval;
 	}
 	
 	
-	//TODO: ヒストリを表示
-	public void dispHistory(){
+	//使用履歴を表示
+	public void dispUsageHistory(){
+		ArrayList<String> itemsrc = new ArrayList<String>();
 		
+		Cursor c = usageDbHelper.fetchAllItems();
+		startManagingCursor(c);
+		c.moveToFirst();
+        int rowcount = c.getCount();
+        int i=0;
+        for (i = 0; i < rowcount ; i++) {
+            String face = c.getString(1);
+            itemsrc.add(i, face);
+            c.moveToNext();
+        }
+		c.moveToFirst();
+
+		final CharSequence[] items = new CharSequence[i];
+		for(int j =0;j<i;j++){
+            Log.d(TAG,"dispUsageHistory:items:[" + j + "," + itemsrc.get(j) + "]");
+            if((CharSequence)itemsrc.get(j) != null){
+            	items[j] = (CharSequence)itemsrc.get(j);
+            }
+		}
+		
+		//
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		//
+		b.setItems(items, new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		        //
+		    	replace((String)items[id]);
+		    }
+		});
+		
+		// アラートダイアログの否定ボタンがクリックされた時に呼び出されるコールバックを登録します
+		b.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        
+		    }});
+		// アラートダイアログのキャンセルが可能かどうかを設定します
+		b.setCancelable(true);
+		AlertDialog alertDialog = b.create();
+		// アラートダイアログを表示します
+		alertDialog.show();		
+		
+		
+		return;
+	}
+	
+	
+	//生成履歴を表示
+	public void dispGenHistory(){
+		//
+		Cursor itemCursor = genDbHelper.fetchAllItems();
+		startManagingCursor(itemCursor);
+
+		// 表示する列
+		String[] from = new String[] { generateModel.KEY_FACE };
+
+		// 表示する列に関連付けるwidget
+		int[] to = new int[] { R.id.text0  };
+
+		// Now create a simple cursor adapter and set it to display
+		SimpleCursorAdapter notes = new SimpleCursorAdapter(this,
+				R.layout.mushroom_list, itemCursor, from, to);
+		setListAdapter(notes);
+
+		Log.d(TAG, "dispGenHistory:rows:"+itemCursor.getCount());
+		Log.d(TAG, "dispGenHistory:done");
 		return;
 	}
 

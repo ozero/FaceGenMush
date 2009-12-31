@@ -48,6 +48,13 @@
       android:text="@string/replace" />
 
     <Button
+      android:id="@+id/usagehistory_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="@string/history" />
+
+    <Button
       android:id="@+id/cancel_btn"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -58,22 +65,26 @@
 
 
 
-  <LinearLayout 
-    android:layout_weight="1"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
 	  <TextView
 	    android:id="@+id/historygen_tv"
 	    android:textSize = "12dp"
 	    android:includeFontPadding = "true"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:text="history:gen" 
+	    android:text="@string/genhistory" 
+		  android:textColor="#f0f0f0"  
+		  android:background="#666666"  
 	    />
-	  <ListView android:id="@+id/historygen:list"
+  <LinearLayout 
+    android:layout_weight="1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	  android:background="#e0e0e0"  
+    >
+	  <ListView android:id="@+id/android:list"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent" />
-	  <TextView android:id="@+id/historygen:empty"
+	  <TextView android:id="@+id/android:empty"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:text="No Items.." />

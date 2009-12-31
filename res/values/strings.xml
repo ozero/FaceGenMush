@@ -21,5 +21,7 @@
 	<string name="app_name">FaceGenMush</string>
   <string name="regenerate">Pick another</string>
   <string name="replace">Use this</string>
+  <string name="history">history</string>
+  <string name="genhistory">generated :</string>
 	<string name="cancel">Cancel</string>
 </resources>

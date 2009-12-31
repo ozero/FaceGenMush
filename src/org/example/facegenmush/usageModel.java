@@ -29,14 +29,16 @@ public class usageModel {
 	public static final String KEY_FACE = "face";
 	public static final String KEY_ROWID = "_id";
 
-	private static final String TAG = "Converter";
+	private static final String TAG = "usageModel";
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;// DBへの接続オブジェクト
 
-	private static final String DATABASE_NAME = "data";
-	private static final String DATABASE_TABLE = "item";
+	private static final String DATABASE_NAME = "usagehistory";
+	private static final String DATABASE_TABLE = "usageitem";
 	private static final int DATABASE_VERSION = 2;
 
+	private static final int maxRowNumLimit = 50;	
+	
 	/**
 	 * Database creation sql statement
 	 */
@@ -114,8 +116,33 @@ public class usageModel {
 	public long createItem(String face) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_FACE, face);
+		
+		//重複があればdeleteしてからinsert（≒項目のpop
+		Cursor cur = mDb.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_FACE},
+				KEY_FACE + " = '" + face + "'", null, null, null, KEY_ROWID + " desc", "0,1");
+		if(cur.getCount() > 0){
+			String sql = "delete from " + DATABASE_TABLE + 
+			" where " + KEY_FACE + " = '" + face + "'  ;";
+			mDb.execSQL(sql);
+		}
+		Long ret = mDb.insert(DATABASE_TABLE, null, initialValues);
 
-		return mDb.insert(DATABASE_TABLE, null, initialValues);
+		//erase item over 50.
+		cur = mDb.query(DATABASE_TABLE, new String[] { KEY_ROWID},
+				null, null, null, null, KEY_ROWID + " desc", "0,1");
+		cur.moveToFirst();
+		int maxrowid = cur.getInt(0);
+		if(
+			(cur.getCount() > 0)
+			&&(maxrowid > maxRowNumLimit)
+		){
+			String sql = "delete from " + DATABASE_TABLE + 
+			" where " + KEY_ROWID + " < " + (maxrowid - maxRowNumLimit + 1) + "  ;";
+			Log.d(TAG, "maxLimit:"+sql);
+			mDb.execSQL(sql);
+		}
+
+		return ret;
 	}
 
 	/**
@@ -138,7 +165,7 @@ public class usageModel {
 	public Cursor fetchAllItems() {
 
 		return mDb.query(DATABASE_TABLE, new String[] { KEY_ROWID, KEY_FACE},
-				null, null, null, null, KEY_ROWID);
+				null, null, null, null, KEY_ROWID + " desc" );
 	}
 
 	/**

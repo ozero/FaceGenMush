@@ -6,22 +6,9 @@
   >
 
 <TextView android:id="@+id/text0"
-    android:layout_height="48dp"
-    android:layout_width="wrap_content"
-    android:textSize="10dp"
-    android:textColor="#ffcccccc" 
-    />
-<TextView android:id="@+id/text99"
-    android:layout_height="48dp"
-    android:layout_width="wrap_content"
-    android:textSize="16dp"
-    android:text=" " 
-    />
-<TextView android:id="@+id/text1"
-    android:layout_weight="1"
-    android:layout_width="wrap_content"
-    android:layout_height="30dp"
-    android:textSize="20dp"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:textSize="24dp"
     android:textColor="#ff666666" 
     />
 </LinearLayout>
