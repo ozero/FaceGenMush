@@ -24,4 +24,6 @@
   <string name="history">history</string>
   <string name="genhistory">generated :</string>
 	<string name="cancel">Cancel</string>
+	<string name="toast_short_copyedtoclipboard"> was copyed into clipboard.</string>
+
 </resources>

@@ -22,4 +22,6 @@
   <string name="history">使用履歴</string>
   <string name="genhistory">生成履歴 :</string>
 	<string name="cancel">キャンセル</string>
+	<string name="toast_short_copyedtoclipboard"> をコピーしました。</string>
+
 </resources>
