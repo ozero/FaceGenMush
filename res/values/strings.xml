@@ -18,12 +18,15 @@
 -->
 <resources>
 	<string name="hello">Hello, This is mushroom app. Call me from simeji.</string>
-	<string name="app_name">FaceGenMush</string>
+	<string name="app_name">Facemark Generator Mushroom</string>
   <string name="regenerate">Pick another</string>
   <string name="replace">Use this</string>
   <string name="history">history</string>
   <string name="genhistory">generated :</string>
+  <string name="genhistory_main">Tap item to copy.</string>
 	<string name="cancel">Cancel</string>
 	<string name="toast_short_copyedtoclipboard"> was copyed into clipboard.</string>
+	<string name="menu_notify">Stay/Part from Notification Bar</string>
+	<string name="notify_desc">Lauch Facemark generator Mashroom.</string>
 
 </resources>

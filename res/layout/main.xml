@@ -29,22 +29,37 @@
 		android:layout_height="wrap_content"
     android:padding="6dp"
     android:includeFontPadding = "true"
-    android:textSize = "36dp"
+    android:textSize = "24dp"
     android:gravity="center"
     />
-  <Button
-    android:id="@+id/regreet_btn"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/regenerate"
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-     />
+		>
+	  <Button
+	    android:id="@+id/regreet_btn"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/regenerate"
+	    android:layout_weight="1"
+	    />
+		<Button
+		  android:id="@+id/usagehistory_btn"
+		  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		  android:text="@string/history"
+	    android:layout_weight="1"
+		  />
+	</LinearLayout>
   <TextView
     android:id="@+id/caption_tv"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:autoLink="web"
     android:textColor="#333333"
     android:textSize = "10dp"
@@ -57,7 +72,7 @@
     android:includeFontPadding = "true"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="@string/genhistory" 
+    android:text="@string/genhistory_main" 
 	  android:textColor="#f0f0f0"  
 	  android:background="#666666"  
     />

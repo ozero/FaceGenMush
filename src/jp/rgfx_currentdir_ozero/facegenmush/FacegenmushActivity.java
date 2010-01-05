@@ -20,11 +20,17 @@ import java.util.Random;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -41,7 +47,7 @@ public class FacegenmushActivity extends ListActivity implements
 		OnClickListener {
 	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
 	private static final String REPLACE_KEY = "replace_key";
-	private String mReplaceString;
+	private String mReplaceString = "";
 	private Button mRegenerateBtn;
 	private Button mRegreetBtn;
 	private Button mReplaceBtn;
@@ -54,7 +60,10 @@ public class FacegenmushActivity extends ListActivity implements
 	private generateModel genDbHelper = new generateModel(this);
 	private usageModel usageDbHelper = new usageModel(this);
 	private boolean isStandalone;
-
+	private boolean isStayedOnNotificaiton = false;
+	private static final int NOTIFY_STAY_ID = R.id.menu_notify_stay;
+	private static NotificationManager mNM;
+	
 	// http://www.adamrocker.com/blog/mushroom-collaborates-with-simeji/
 
 	@Override
@@ -66,6 +75,8 @@ public class FacegenmushActivity extends ListActivity implements
 		genDbHelper.open();
 		usageDbHelper.open();
 		gen = generate();// 生成
+		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		
 
 		if (action != null && ACTION_INTERCEPT.equals(action)) {
 			isStandalone = false;
@@ -104,6 +115,8 @@ public class FacegenmushActivity extends ListActivity implements
 			// bind
 			mRegreetBtn = (Button) findViewById(R.id.regreet_btn);
 			mRegreetBtn.setOnClickListener(this);
+			mUsagehistoryBtn = (Button) findViewById(R.id.usagehistory_btn);
+			mUsagehistoryBtn.setOnClickListener(this);
 			// mod
 			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
 			mFacecharTV.setText(gen[0] + " < Hello, This is a mushroom app.");
@@ -154,23 +167,38 @@ public class FacegenmushActivity extends ListActivity implements
 		Cursor c = genDbHelper.fetchItem(id);
 		String face = c.getString(c
 				.getColumnIndexOrThrow(generateModel.KEY_FACE));
-
-		// simeji呼び出しかどうか
-		if (!isStandalone) {
-			String result = face + " " + mReplaceString;
-			replace(result);
-		} else {
-			// クリップボードマネージャを宣言。
-			ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			// クリップボードへ値をコピー。
-			cm.setText(face);
-			Toast.makeText(this, face + getString(R.string.toast_short_copyedtoclipboard),
-				Toast.LENGTH_SHORT).show();
-
-		}
-
+		
+		//
+		String result = face + " " + mReplaceString;
+		replace(result);
 		return;
 	}
+	
+	
+	// メニューを作成
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+    	//メニューインフレーターを取得
+    	MenuInflater inflater = getMenuInflater();
+    	//xmlのリソースファイルを使用してメニューにアイテムを追加
+    	inflater.inflate(R.menu.main, menu);
+    	//できたらtrueを返す
+		return true;
+	}
+
+	// メニューがクリックされた際
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case NOTIFY_STAY_ID:
+			notifyStay();
+			return true;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
+	
+	
 
 	// ////////////////////////////////////////////////////////////////////////
 
@@ -181,15 +209,52 @@ public class FacegenmushActivity extends ListActivity implements
 	 *            Replacing string
 	 */
 	private void replace(String result) {
-		Intent data = new Intent();
-		data.putExtra(REPLACE_KEY, result);
-		setResult(RESULT_OK, data);
 
+		// simeji呼び出しかどうか
+		if (!isStandalone) {
+			Intent data = new Intent();
+			data.putExtra(REPLACE_KEY, result);
+			setResult(RESULT_OK, data);
+			
+		} else {
+			// クリップボードマネージャを宣言。
+			ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+			// クリップボードへ値をコピー。
+			cm.setText(result);
+			Toast.makeText(this, result + getString(R.string.toast_short_copyedtoclipboard),
+				Toast.LENGTH_SHORT).show();
+		}
+		
 		// 使用履歴に記録する
 		usageDbHelper.createItem(result);
 
 		finish();
 	}
+	
+	
+	//このアプリを通知バーの実行中欄に登録する
+	private void notifyStay(){
+		if(isStayedOnNotificaiton){
+			mNM.cancel(R.string.app_name);
+			isStayedOnNotificaiton = false;
+		}else{
+			String notiStr = getString(R.string.app_name);
+			Notification noti = new Notification(R.drawable.icon, notiStr, System.currentTimeMillis());
+			PendingIntent contentIntent = PendingIntent.getActivity(
+				this, 0, new Intent(this,FacegenmushActivity.class),
+				Intent.FLAG_ACTIVITY_NEW_TASK
+			);
+			noti.setLatestEventInfo(
+				this, getString(R.string.app_name),getString(R.string.notify_desc), contentIntent
+			);
+			noti.flags= Notification.FLAG_ONGOING_EVENT;
+			mNM.notify(R.string.app_name, noti);
+			isStayedOnNotificaiton = true;
+		}
+		
+	}
+	
+	
 
 	// ランダムに選択
 	private String[] randSelect(String[][] data) {
@@ -266,8 +331,10 @@ public class FacegenmushActivity extends ListActivity implements
 		//
 		b.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				//
-				replace((String) items[id]);
+				// 履歴がクリックされた場合
+				String result = (String) items[id] + " " + mReplaceString;
+				replace(result);
+				finish();
 			}
 		});
 

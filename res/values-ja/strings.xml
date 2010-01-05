@@ -17,11 +17,15 @@
  */
 -->
 <resources>
+	<string name="app_name">お顔メーカーMushroom</string>
   <string name="regenerate">もう一度選ぶ</string>
   <string name="replace">これを使う</string>
   <string name="history">使用履歴</string>
   <string name="genhistory">生成履歴 :</string>
+  <string name="genhistory_main">項目をタップするとコピーします</string>
 	<string name="cancel">キャンセル</string>
 	<string name="toast_short_copyedtoclipboard"> をコピーしました。</string>
+	<string name="menu_notify">通知バーに常駐する・しない</string>
+	<string name="notify_desc">お顔メーカーMashroomを起動します。</string>
 
 </resources>
