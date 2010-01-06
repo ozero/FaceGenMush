@@ -43,10 +43,15 @@ import android.util.Log;
 
 import jp.rgfx_currentdir_ozero.facegenmush.generateModel;
 
-public class FacegenmushActivity extends ListActivity implements
-		OnClickListener {
+public class FacegenmushActivity 
+	extends ListActivity 
+	implements OnClickListener 
+	{
 	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
 	private static final String REPLACE_KEY = "replace_key";
+	private String TAG = "FaceGenMush";
+	private String FROM_NOTIBAR_KEY = "fromNotiBar";
+	//
 	private String mReplaceString = "";
 	private Button mRegenerateBtn;
 	private Button mRegreetBtn;
@@ -54,15 +59,17 @@ public class FacegenmushActivity extends ListActivity implements
 	private Button mUsagehistoryBtn;
 	private Button mCancelBtn;
 	private TextView mFacecharTV;
+	private static final int NOTIFY_STAY_ID = R.id.menu_notify_stay;
+	//
+	private static NotificationManager mNM;
 	private Random random = new Random();
-	private String gen[] = null;
-	private String TAG = "FaceGenMush";
 	private generateModel genDbHelper = new generateModel(this);
 	private usageModel usageDbHelper = new usageModel(this);
+	//
+	private String gen[] = null;
 	private boolean isStandalone;
-	private boolean isStayedOnNotificaiton = false;
-	private static final int NOTIFY_STAY_ID = R.id.menu_notify_stay;
-	private static NotificationManager mNM;
+	private boolean isStayOnNotificaiton = false;
+	private boolean isLaunchedFromNotificaiton = false;
 	
 	// http://www.adamrocker.com/blog/mushroom-collaborates-with-simeji/
 
@@ -77,13 +84,23 @@ public class FacegenmushActivity extends ListActivity implements
 		gen = generate();// 生成
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		
-
+		//is standalone or mushroom
 		if (action != null && ACTION_INTERCEPT.equals(action)) {
 			isStandalone = false;
+			Log.d(TAG, "init:isStandAlone:false");
 		} else {
 			isStandalone = true;
+			Log.d(TAG, "init:isStandAlone:true");
+	        //通知領域からの起動かどうか
+			if (it.getBooleanExtra(FROM_NOTIBAR_KEY, false)) {
+				isLaunchedFromNotificaiton = true;
+				Log.d(TAG, "init:isLaunchedFromNoti:true");
+			}else{
+				Log.d(TAG, "init:isLaunchedFromNoti:false");
+			}
 		}
 
+		
 		//
 		if (!isStandalone) {
 			/* Simejiから呼出された時 */
@@ -125,8 +142,59 @@ public class FacegenmushActivity extends ListActivity implements
 			Log.d(TAG, "init:dialog-norm:done");
 		}
 	}
-
-	// event dispatcher
+	
+	//resumeの際はappstateにnotifyにstayしたかどうか残ってるので。。
+	@Override
+	public void onResume() {
+		// init
+		super.onResume();
+		genDbHelper.open();
+		usageDbHelper.open();
+		
+        //通知領域からの起動かどうか
+		if (isStayOnNotificaiton) {
+			isLaunchedFromNotificaiton = true;
+			Log.d(TAG, "resume:isLaunchedFromNoti:true");
+		}else{
+			Log.d(TAG, "resume:isLaunchedFromNoti:false");
+		}
+	}
+	
+	//終了する際はDBへの接続を仕舞う
+	@Override
+	public void onPause() {
+		// init
+		super.onPause();
+		genDbHelper.close();
+		usageDbHelper.close();
+		Log.d(TAG, "onPause:closed DB conn.");
+		return;
+	}
+	@Override
+	public void onStop() {
+		// init
+		super.onStop();
+		genDbHelper.close();
+		usageDbHelper.close();
+		Log.d(TAG, "onStop:closed DB conn.");
+		return;
+	}
+	@Override
+	public void onDestroy() {
+		// init
+		super.onDestroy();
+		genDbHelper.close();
+		usageDbHelper.close();
+		Log.d(TAG, "onDestroy:closed DB conn.");
+		return;
+	}
+	
+	
+	
+	
+	////////////////////////////////////////////////
+	
+	// GUI event dispatcher
 	public void onClick(View v) {
 		String result = null;
 		if (v == mReplaceBtn) {
@@ -234,14 +302,17 @@ public class FacegenmushActivity extends ListActivity implements
 	
 	//このアプリを通知バーの実行中欄に登録する
 	private void notifyStay(){
-		if(isStayedOnNotificaiton){
-			mNM.cancel(R.string.app_name);
-			isStayedOnNotificaiton = false;
+		if(isLaunchedFromNotificaiton){
+			mNM.cancelAll();
+			isStayOnNotificaiton = false;
+			isLaunchedFromNotificaiton = false;
 		}else{
 			String notiStr = getString(R.string.app_name);
 			Notification noti = new Notification(R.drawable.icon, notiStr, System.currentTimeMillis());
+			Intent int0 = new Intent(this,FacegenmushActivity.class);
+			int0.putExtra(FROM_NOTIBAR_KEY , true);
 			PendingIntent contentIntent = PendingIntent.getActivity(
-				this, 0, new Intent(this,FacegenmushActivity.class),
+				this, 0, int0,
 				Intent.FLAG_ACTIVITY_NEW_TASK
 			);
 			noti.setLatestEventInfo(
@@ -249,9 +320,10 @@ public class FacegenmushActivity extends ListActivity implements
 			);
 			noti.flags= Notification.FLAG_ONGOING_EVENT;
 			mNM.notify(R.string.app_name, noti);
-			isStayedOnNotificaiton = true;
+			isStayOnNotificaiton = true;
+			isLaunchedFromNotificaiton = true;
 		}
-		
+		return;
 	}
 	
 	
@@ -292,8 +364,8 @@ public class FacegenmushActivity extends ListActivity implements
 		;
 
 		String retval[] = { ielm, color[0], color[1], color[2] };
-		Log.d(TAG, "generate: [" + retval[0] + " / " + retval[1] + retval[2]
-				+ retval[3] + "]");
+//		Log.d(TAG, "generate: [" + retval[0] + " / " + retval[1] + retval[2]
+//				+ retval[3] + "]");
 
 		// 生成履歴に記録
 		genDbHelper.createItem(ielm);
@@ -319,8 +391,8 @@ public class FacegenmushActivity extends ListActivity implements
 
 		final CharSequence[] items = new CharSequence[i];
 		for (int j = 0; j < i; j++) {
-			Log.d(TAG, "dispUsageHistory:items:[" + j + "," + itemsrc.get(j)
-					+ "]");
+			//Log.d(TAG, "dispUsageHistory:items:[" + j + "," + itemsrc.get(j)
+			//		+ "]");
 			if ((CharSequence) itemsrc.get(j) != null) {
 				items[j] = (CharSequence) itemsrc.get(j);
 			}
@@ -372,8 +444,8 @@ public class FacegenmushActivity extends ListActivity implements
 				R.layout.mushroom_list, itemCursor, from, to);
 		setListAdapter(notes);
 
-		Log.d(TAG, "dispGenHistory:rows:" + itemCursor.getCount());
-		Log.d(TAG, "dispGenHistory:done");
+//		Log.d(TAG, "dispGenHistory:rows:" + itemCursor.getCount());
+//		Log.d(TAG, "dispGenHistory:done");
 		return;
 	}
 

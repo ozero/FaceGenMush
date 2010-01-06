@@ -105,6 +105,7 @@ public class generateModel {
 
 	public void close() {
 		mDbHelper.close();
+		mDb.close();
 	}
 
 	/**
@@ -131,7 +132,7 @@ public class generateModel {
 		){
 			String sql = "delete from " + DATABASE_TABLE + 
 			" where " + KEY_ROWID + " < " + (maxrowid - maxRowNumLimit + 1) + "  ;";
-			Log.d(TAG, "maxLimit:"+sql);
+			//Log.d(TAG, "maxLimit:"+sql);
 			mDb.execSQL(sql);
 		}
 
@@ -191,9 +192,6 @@ public class generateModel {
 	public boolean updateItem(long rowId, String face) {
 		ContentValues args = new ContentValues();
 		args.put(KEY_FACE, face);
-		
-		//TODO : 30件越えた分については消すように
-
 		return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	}
 	

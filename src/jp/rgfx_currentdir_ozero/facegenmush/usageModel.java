@@ -106,6 +106,7 @@ public class usageModel {
 
 	public void close() {
 		mDbHelper.close();
+		mDb.close();
 	}
 
 	/**
