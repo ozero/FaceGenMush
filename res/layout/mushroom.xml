@@ -65,21 +65,22 @@
 
 
 
-	  <TextView
-	    android:id="@+id/historygen_tv"
-	    android:textSize = "12dp"
-	    android:includeFontPadding = "true"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:text="@string/genhistory" 
-		  android:textColor="#f0f0f0"  
-		  android:background="#666666"  
-	    />
+  <TextView
+    android:id="@+id/historygen_tv"
+    android:textSize = "12dp"
+    android:includeFontPadding = "true"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/genhistory" 
+	android:textColor="#f0f0f0"  
+	android:background="#666666"  
+    />
   <LinearLayout 
+	android:id="@+id/history_ll"
     android:layout_weight="1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-	  android:background="#e0e0e0"  
+	android:background="#e0e0e0"  
     android:cacheColorHint="#00000000"
     >
 	  <ListView android:id="@+id/android:list"

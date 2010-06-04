@@ -15,7 +15,7 @@ package jp.rgfx_currentdir_ozero.facegenmush;
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-import java.util.ArrayList;
+
 import java.util.Random;
 
 import android.app.AlertDialog;
@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,29 +36,28 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.text.ClipboardManager;
 import android.util.Log;
+//from: http://www.adamrocker.com/blog/mushroom-collaborates-with-simeji/
 
-import jp.rgfx_currentdir_ozero.facegenmush.generateModel;
 
 public class FacegenmushActivity 
 	extends ListActivity 
 	implements OnClickListener 
 	{
-	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
+	
+	// properties ///////////////////////////////////////////////////////////
+	
+	private static final String ACTION_INTERCEPT = 
+		"com.adamrocker.android.simeji.ACTION_INTERCEPT";
 	private static final String REPLACE_KEY = "replace_key";
 	private String TAG = "FaceGenMush";
 	private String FROM_NOTIBAR_KEY = "fromNotiBar";
 	//
 	private String mReplaceString = "";
-	private Button mRegenerateBtn;
-	private Button mRegreetBtn;
-	private Button mReplaceBtn;
-	private Button mUsagehistoryBtn;
-	private Button mCancelBtn;
+	private Button mRegenerateBtn, mRegreetBtn, mReplaceBtn, mUsagehistoryBtn, mCancelBtn;
 	private TextView mFacecharTV;
 	private static final int NOTIFY_STAY_ID = R.id.menu_notify_stay;
 	//
@@ -70,9 +70,14 @@ public class FacegenmushActivity
 	private boolean isStandalone;
 	private boolean isStayOnNotificaiton = false;
 	private boolean isLaunchedFromNotificaiton = false;
+	//
+	public static Typeface faceDejaVu;
 	
-	// http://www.adamrocker.com/blog/mushroom-collaborates-with-simeji/
-
+	
+	
+	
+	// GUIライフサイクル定義 ////////////////////////////////////////////////
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// init
@@ -84,7 +89,7 @@ public class FacegenmushActivity
 		gen = generate();// 生成
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		
-		//is standalone or mushroom
+		//is stand-alone or mushroom
 		if (action != null && ACTION_INTERCEPT.equals(action)) {
 			isStandalone = false;
 			Log.d(TAG, "init:isStandAlone:false");
@@ -100,13 +105,23 @@ public class FacegenmushActivity
 			}
 		}
 
+		// Construct View
+		if (!isStandalone) {
+			setContentView(R.layout.mushroom);
+		} else {
+			setContentView(R.layout.main);
+		}
+		
+		//set typeface
+		faceDejaVu =Typeface.createFromAsset(this.getAssets(), "fonts/DejaVuSans.ttf"); 
+		mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
+		mFacecharTV.setTypeface(faceDejaVu);
+
 		
 		//
 		if (!isStandalone) {
 			/* Simejiから呼出された時 */
 			mReplaceString = it.getStringExtra(REPLACE_KEY);// 置換元の文字を取得
-			// Construct View
-			setContentView(R.layout.mushroom);
 			// bind
 			mRegenerateBtn = (Button) findViewById(R.id.regenerate_btn);
 			mRegenerateBtn.setOnClickListener(this);
@@ -117,29 +132,25 @@ public class FacegenmushActivity
 			mUsagehistoryBtn = (Button) findViewById(R.id.usagehistory_btn);
 			mUsagehistoryBtn.setOnClickListener(this);
 			// mod
-			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
 			mFacecharTV.setText((String) gen[0]);
 			mFacecharTV.setTextColor(Color.rgb(Integer.parseInt(gen[1]),
 					Integer.parseInt(gen[2]), Integer.parseInt(gen[3])));
 			// ヒストリを表示
 			dispGenHistory();
-
-			Log.d(TAG, "init:dialog-mush:done");
+			//Log.d(TAG, "init:dialog-mush:done");
+			
 		} else {
 			// Simeji以外から呼出された時
-			// Construct View
-			setContentView(R.layout.main);
 			// bind
 			mRegreetBtn = (Button) findViewById(R.id.regreet_btn);
 			mRegreetBtn.setOnClickListener(this);
 			mUsagehistoryBtn = (Button) findViewById(R.id.usagehistory_btn);
 			mUsagehistoryBtn.setOnClickListener(this);
 			// mod
-			mFacecharTV = (TextView) findViewById(R.id.facechar_tv);
 			mFacecharTV.setText(gen[0] + " < Hello, This is a mushroom app.");
 			// ヒストリを表示
 			dispGenHistory();
-			Log.d(TAG, "init:dialog-norm:done");
+			//Log.d(TAG, "init:dialog-norm:done");
 		}
 	}
 	
@@ -192,9 +203,9 @@ public class FacegenmushActivity
 	
 	
 	
-	////////////////////////////////////////////////
+	// GUIイベント定義 ////////////////////////////////////////////////
 	
-	// GUI event dispatcher
+	// クリックイベントディスパッチャ
 	public void onClick(View v) {
 		String result = null;
 		if (v == mReplaceBtn) {
@@ -223,7 +234,9 @@ public class FacegenmushActivity
 			dispGenHistory();
 		} else if (v == mUsagehistoryBtn) {
 			Log.d(TAG, "click:usagehistory");
-			dispUsageHistory();
+			Intent i = new Intent(this,UsagehistoryActivity.class);
+			startActivity(i);
+			//dispUsageHistory();
 		}
 	}
 
@@ -243,7 +256,7 @@ public class FacegenmushActivity
 	}
 	
 	
-	// メニューを作成
+	// メニューの定義
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -268,7 +281,7 @@ public class FacegenmushActivity
 	
 	
 
-	// ////////////////////////////////////////////////////////////////////////
+	// その他処理 /////////////////////////////////////////////////////
 
 	/**
 	 * 元の文字を置き換える
@@ -308,7 +321,8 @@ public class FacegenmushActivity
 			isLaunchedFromNotificaiton = false;
 		}else{
 			String notiStr = getString(R.string.app_name);
-			Notification noti = new Notification(R.drawable.icon, notiStr, System.currentTimeMillis());
+			Notification noti = new Notification(
+				R.drawable.icon, notiStr, System.currentTimeMillis());
 			Intent int0 = new Intent(this,FacegenmushActivity.class);
 			int0.putExtra(FROM_NOTIBAR_KEY , true);
 			PendingIntent contentIntent = PendingIntent.getActivity(
@@ -316,7 +330,8 @@ public class FacegenmushActivity
 				Intent.FLAG_ACTIVITY_NEW_TASK
 			);
 			noti.setLatestEventInfo(
-				this, getString(R.string.app_name),getString(R.string.notify_desc), contentIntent
+				this, getString(R.string.app_name),
+				getString(R.string.notify_desc), contentIntent
 			);
 			noti.flags= Notification.FLAG_ONGOING_EVENT;
 			mNM.notify(R.string.app_name, noti);
@@ -337,9 +352,8 @@ public class FacegenmushActivity
 		return retval;
 	}
 
-	// 組み立て
+	// 顔文字の組み立て
 	private String[] generate() {
-
 		faceparts parts = new faceparts(0);
 
 		// ランダム選択
@@ -355,17 +369,14 @@ public class FacegenmushActivity
 
 		// 組み立て
 		String ielm = otete[0] + rinkaku[0]
-				+ ((otete[1] == "" || otete[3] == "") ? "" : hoppe[0])
-				+ omeme[0] + ((otete[2] == "") ? okuti[0] : otete[2])
-				+ omeme[1]
-				+ ((otete[3] == "" || otete[1] == "") ? "" : hoppe[1])
-				+ rinkaku[1] + otete[4]
-		// + " http://bit.ly/1YKyIG"
+			+ ((otete[1] == "" || otete[3] == "") ? "" : hoppe[0])
+			+ omeme[0] + ((otete[2] == "") ? okuti[0] : otete[2])
+			+ omeme[1]
+			+ ((otete[3] == "" || otete[1] == "") ? "" : hoppe[1])
+			+ rinkaku[1] + otete[4]
 		;
 
 		String retval[] = { ielm, color[0], color[1], color[2] };
-//		Log.d(TAG, "generate: [" + retval[0] + " / " + retval[1] + retval[2]
-//				+ retval[3] + "]");
 
 		// 生成履歴に記録
 		genDbHelper.createItem(ielm);
@@ -375,32 +386,22 @@ public class FacegenmushActivity
 
 	// 使用履歴を表示
 	public void dispUsageHistory() {
-		ArrayList<String> itemsrc = new ArrayList<String>();
-
+		
+		//AlertDialogがCharSequence[]しか使えないのでCursorから変換
 		Cursor c = usageDbHelper.fetchAllItems();
 		startManagingCursor(c);
 		c.moveToFirst();
 		int rowcount = c.getCount();
 		int i = 0;
+		final CharSequence[] items = new CharSequence[(rowcount)];
 		for (i = 0; i < rowcount; i++) {
-			String face = c.getString(1);
-			itemsrc.add(i, face);
+			items[i] = (CharSequence) c.getString(1);
 			c.moveToNext();
 		}
-		c.moveToFirst();
 
-		final CharSequence[] items = new CharSequence[i];
-		for (int j = 0; j < i; j++) {
-			//Log.d(TAG, "dispUsageHistory:items:[" + j + "," + itemsrc.get(j)
-			//		+ "]");
-			if ((CharSequence) itemsrc.get(j) != null) {
-				items[j] = (CharSequence) itemsrc.get(j);
-			}
-		}
-
-		//
+		//ダイアログの生成
 		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		//
+		//アイテムのイベント定義
 		b.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				// 履歴がクリックされた場合
@@ -409,45 +410,40 @@ public class FacegenmushActivity
 				finish();
 			}
 		});
-
-		// アラートダイアログの否定ボタンがクリックされた時に呼び出されるコールバックを登録します
+		// アラートダイアログの否定ボタンクリック時イベントの登録
 		b.setNegativeButton(R.string.cancel,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-
-					}
-				});
+			new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			});
 		// アラートダイアログのキャンセルが可能かどうかを設定します
 		b.setCancelable(true);
 		AlertDialog alertDialog = b.create();
 		// アラートダイアログを表示します
 		alertDialog.show();
-
 		return;
 	}
 
 	// 生成履歴を表示
 	public void dispGenHistory() {
-		//
+		//元データへのカーソル
 		Cursor itemCursor = genDbHelper.fetchAllItems();
 		startManagingCursor(itemCursor);
-
 		// 表示する列
-		String[] from = new String[] { generateModel.KEY_FACE };
-
+		String[] colnamesToBind = new String[] { generateModel.KEY_FACE };
 		// 表示する列に関連付けるwidget
-		int[] to = new int[] { R.id.text0 };
-
+		int[] widgetsToBind = new int[] { R.id.text0 };
 		// Now create a simple cursor adapter and set it to display
-		SimpleCursorAdapter notes = new SimpleCursorAdapter(this,
-				R.layout.mushroom_list, itemCursor, from, to);
-		setListAdapter(notes);
-
-//		Log.d(TAG, "dispGenHistory:rows:" + itemCursor.getCount());
-//		Log.d(TAG, "dispGenHistory:done");
+		MycursorAdapter mca = new MycursorAdapter(
+			this, R.layout.mushroom_list, itemCursor,
+			colnamesToBind, widgetsToBind);
+		setListAdapter(mca);		
 		return;
 	}
+
+
+	
 
 	//
 	// from : http://amachang.sakura.ne.jp/misc/aamaker/

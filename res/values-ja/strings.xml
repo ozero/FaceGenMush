@@ -26,6 +26,7 @@
 	<string name="cancel">キャンセル</string>
 	<string name="toast_short_copyedtoclipboard"> をコピーしました。</string>
 	<string name="menu_notify">通知バーに常駐する・しない</string>
+	<string name="menu_gryphtest">gtest</string>
 	<string name="notify_desc">お顔メーカーMashroomを起動します。</string>
 
 </resources>

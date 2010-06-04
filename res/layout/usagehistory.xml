@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" 
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:textColor="#666666"
+  android:background="#f0f0f0"
+  >
+  <TextView
+    android:id="@+id/historygen_tv"
+    android:textSize = "12dp"
+    android:includeFontPadding = "true"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/genhistory_main" 
+    android:textColor="#f0f0f0"  
+    android:background="#666666"  
+    />
+  <LinearLayout 
+    android:id="@+id/history_ll"
+    android:layout_weight="1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#e0e0e0"  
+    >
+    <ListView android:id="@+id/android:list"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:cacheColorHint="#00000000"
+      />
+    <TextView android:id="@+id/android:empty"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:text="No Items.." />
+  </LinearLayout>
+
+
+</LinearLayout>

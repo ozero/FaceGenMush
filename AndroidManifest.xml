@@ -21,14 +21,18 @@
 	android:versionCode="2"
 	android:versionName="1.1">
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
-		<activity android:name=".FacegenmushActivity" android:icon="@drawable/icon"
-			android:label="@string/app_name"
-			android:theme="@style/Theme.base">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
+    <activity android:name=".FacegenmushActivity" android:icon="@drawable/icon"
+      android:label="@string/app_name"
+      android:theme="@style/Theme.base">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <activity android:name=".UsagehistoryActivity" android:icon="@drawable/icon"
+      android:label="@string/app_name"
+      android:theme="@style/Theme.base">
+    </activity>
 		<activity android:name=".FacegenmushActivity" android:icon="@drawable/icon"
 			android:label="@string/app_name"
 			android:theme="@style/Theme.base">
@@ -43,6 +47,5 @@
 	<supports-screens
 		android:smallScreens="true"  
 		android:normalScreens="true"  
-		android:largeScreens="true"  
-		android:anyDensity="true" />
+		android:largeScreens="true" android:anyDensity="false"/>
 </manifest>
